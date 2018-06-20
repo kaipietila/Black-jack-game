@@ -1,18 +1,19 @@
 class Card:
-    import randint from random 
     '''
     This class defines the cards, deals a card and checks its validity
     '''
-    def __init__(self,suit,value):
+    def __init__(self,suit=0,value=0):
         self.suit = suit
         self.value = value
 
     def deal(self):
+        from random import randint  
         '''
         generates a card with a random suit and a random value as dealing from a card deck
         '''
-        self.suit = randint(0,4)
-        self.value = randint(0,14)
+        self.suit = randint(1,4)
+        self.value = randint(1,14)
+        print(self.suit,self.value)
         return (self.suit,self.value)
 
     def check_valid_card(self,card,player_hand,dealer_hand):
@@ -26,75 +27,66 @@ class Card:
         else:
             return True
 
-    def card_actual_value(self,card)
+    def card_actual_value(self):
         '''
         Gives the true value of the card. For cards 1-9 returns the value given. For 10,jack,queen,king returns value 10
         and for aces returns value 11.
         '''
         if self.value < 10:
             return self.value
-        elif self.value >= 10 and < 14:
+        elif self.value >= 10 and self.value < 14:
             return 10
         else:
             return 11
 
-class Hand:
 
-    def __init__(self):
-        self.player_hand = []
-        self.dealer_hand = []
+class Wallet:
+    '''
+    A wallet to store and make the bets
+    '''
+    def __init__(self, amount=0):
+        self.amount = amount
+
+    def add_to_wallet(self, amount):
+        self.amount += amount
+        return self.amount
     
-    def add_to_hand(self,player_card):
-        raise NotImplementedError
-
-    def hand_value(self,hand_value):
-        pass
-
-
-    
-class PlayerHand(Hand):
-
-    def add_to_hand(self,player_card):
-        if Card.check_valid_card(player_card, player_hand, dealer_hand):
-            player_hand.append(player_card)
-        else:
+    def make_bet(self):
+        bet_amount= int(input(f"How much would you like to bet? Your wallet contains {self.amount}.\n"))
+        if bet_amount > self.amount:
+            print("The bet was too large!")
             return False
-
-    
-class DealerHand(Hand):
-
-    def add_to_hand(self,dealer_card):
-        if Card.check_valid_card(dealer_card, player_hand, dealer_hand):
-            dealer_hand.append(dealer_card)
-            return True
         else:
-            return False
-
-
+            return bet_amount
+    
+    def check_bet(self, bet_amount, win = False):
+        if win:
+            self.amount += bet_amount
+            return self.amount
+        else:
+            self.amount -= bet_amount
+            return self.amount
+    
+    def show_wallet(self):
+        return self.amount
 
 def playing_game():
 
+    player_hand = []
+    dealer_hand = []
     player_hand_value = 0
     dealer_hand_value = 0
     stop = False
     player_turn = True
+    pass
 
-    while stop is not True and card_value >= 21:
-        if player_turn is True
-            player_card = Card.deal()
-            if PlayerHand.add_to_hand(player_card):
-                player_hand_value += Card.card_actual_value(player_card)
-                player_turn = False
-            else:
-                continue
-        else:
-            dealer_card = Card.deal()
-            if DealerHand.add_to_hand(dealer_card):
-                dealer_hand_value += Card.card_actual_value(dealer_card)
-                player_turn = True
-            else:
-                continue
-            
-pass
+wallet1 = Wallet()
+wallet1.add_to_wallet(500)
+if wallet1.make_bet():
+    x = wallet1.make_bet()
+else:
+    x = 0
+y = wallet1.check_bet(x,True)
+print(y)
 
-    
+
