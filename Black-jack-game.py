@@ -48,7 +48,7 @@ class Hand:
         raise NotImplementedError
 
     def hand_value(self,hand_value):
-        
+        pass
 
 
     
@@ -95,10 +95,6 @@ def playing_game():
             else:
                 continue
             
-
-
-
-
-    pass
+pass
 
     
