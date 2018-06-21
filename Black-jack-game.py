@@ -25,6 +25,8 @@ class Card:
         elif card in dealer_hand:
             return False
         else:
+            print("card is not in any hand")
+            print(card)
             return True
 
     def card_actual_value(self):
@@ -33,8 +35,10 @@ class Card:
         and for aces returns value 11.
         '''
         if self.value < 10:
+            print(self.value)
             return self.value
         elif self.value >= 10 and self.value < 14:
+            print(10)
             return 10
         else:
             return 11
@@ -76,17 +80,50 @@ def playing_game():
     dealer_hand = []
     player_hand_value = 0
     dealer_hand_value = 0
+    game_end = False
     stop = False
     player_turn = True
-    pass
+    card_count = 0
+    '''
+    Need to make a new def called deal_card that uses classes and deals one call on demand. since the game
+    logic goes two cards to both and then the player gets to choose hit or stop until he stops.another while loop until stop
+    '''
 
-wallet1 = Wallet()
-wallet1.add_to_wallet(500)
-if wallet1.make_bet():
-    x = wallet1.make_bet()
-else:
-    x = 0
-y = wallet1.check_bet(x,True)
-print(y)
+    while game_end is not True:
+        if player_turn:
+            card = Card()
+            player_card = card.deal()
+            if card.check_valid_card(player_card, player_hand, dealer_hand):
+                player_hand.append(player_card)
+                player_turn = False
+                player_hand_value += card.card_actual_value()
+                card_count += 1
+            elif card_count >= 4:
+                choice = input("Do you want to hit or stop? ") 
+                if choice is "hit":
+                    continue
+                else:
+
+            else:
+                continue
+        else:
+            card = Card()
+            dealer_card = card.deal()
+            if card.check_valid_card(dealer_card, player_hand, dealer_hand):
+                dealer_hand.append(dealer_card)
+                player_turn = True
+                dealer_hand_value += card.card_actual_value()
+                card_count += 1
+        
+
+
+player_hand = []
+dealer_hand = []
+
+card = Card()
+assigned_card = card.deal()
+card.card_actual_value()
+card.check_valid_card(assigned_card, player_hand, dealer_hand)
+
 
 
