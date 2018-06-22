@@ -74,6 +74,23 @@ class Wallet:
     def show_wallet(self):
         return self.amount
 
+
+def hit_card(player_card, player_hand, dealer_hand):
+    if card.check_valid_card(player_card, player_hand, dealer_hand):
+        player_hand.append(player_card)
+        player_turn = False
+        player_hand_value += card.card_actual_value()
+        card_count += 1
+    
+
+def win_check():
+    '''
+    To check if the player_hand_value is 21 or over and then to compare that to the dealer_hand_value.
+    If player_hand_value is below 21 the dealer will draw cards until same or over player_hand_value. 
+    If dealer_hand_value exceeds 21 the player wins.
+    '''
+    pass
+
 def playing_game():
 
     player_hand = []
@@ -93,11 +110,7 @@ def playing_game():
         if player_turn:
             card = Card()
             player_card = card.deal()
-            if card.check_valid_card(player_card, player_hand, dealer_hand):
-                player_hand.append(player_card)
-                player_turn = False
-                player_hand_value += card.card_actual_value()
-                card_count += 1
+            hit_card(player_card, player_hand, dealer_hand)
             elif card_count >= 4:
                 choice = input("Do you want to hit or stop? ") 
                 if choice is "hit":
@@ -114,8 +127,10 @@ def playing_game():
                 player_turn = True
                 dealer_hand_value += card.card_actual_value()
                 card_count += 1
-        
-
+'''        
+if __name__ == "__main__":
+    playing_game()
+'''
 
 player_hand = []
 dealer_hand = []
