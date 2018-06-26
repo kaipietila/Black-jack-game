@@ -28,6 +28,12 @@ class Deck:
                 card = Card(suit,rank)
                 self.deck.append(card)
         self.shuffle()
+    
+    def __str__(self):
+        deck_comp = ''  
+        for card in self.deck:
+            deck_comp += '\n '+card.__str__() 
+        return 'The deck has:' + deck_comp
 
     def shuffle(self):
         random.shuffle(self.deck)
@@ -37,7 +43,7 @@ class Deck:
 
 class Hand:
 
-    def __init__(self)
+    def __init__(self):
         self.cards = []  
         self.value = 0   
     
@@ -61,18 +67,17 @@ class Wallet:
     '''
     def __init__(self, amount=0):
         self.amount = amount
+        self.bet_amount = 0
 
     def add_to_wallet(self, amount):
         self.amount += amount
-        return self.amount
+        print("Your wallet now contains: ", self.amount)
     
     def check_bet(self, bet_amount, win = False):
         if win:
             self.amount += bet_amount
-            return self.amount
         else:
             self.amount -= bet_amount
-            return self.amount
     
     def show_wallet(self):
         return self.amount
@@ -84,13 +89,17 @@ class Player:
         self.hand = hand
     
 
-def make_bet(self, wallet):
-    bet_amount= int(input(f"How much would you like to bet? Your wallet contains {wallet.amount}.\n"))
-    if bet_amount > wallet.amount:
-        print("The bet was too large!")
-        return False
-    else:
-        return bet_amount
+def make_bet(wallet):
+    while True:
+        try:
+            bet_amount= int(input("How much would you like to bet?"))
+        except:
+            ValueError("not a valid amount!")
+        else:
+            if bet_amount > wallet.amount:
+                print("The bet was too large!")
+            else:
+                break
 
 
 def hit_card(deck, hand):
@@ -98,17 +107,29 @@ def hit_card(deck, hand):
     hand.add_card(card)
        
 def hit_or_stand(deck, hand):
-    global playing  # to control an upcoming while loop
-    if playing:
-        hit_card(deck, hand)
+    global playing
+    player_input = input("Do you want to hit or to stand? h/s ")
+    while True: 
+        if player_input = "h":
+            hit_card(deck, hand)
+            break
+        elif input = "s":
+            global playing = False
+            print("player stands, dealers turn! ")
+            break
+        else:
+            print("do not understand!")
+
 
 def show_some(player,dealer):
-    print(f'Player hand value {player.value}')
-    print (f'Dealer hand value {dealer.value - dealer.cards[0].value}')
+    print("\nPlayer's Hand: ", *player.cards, sep = "\n")
+    print ("\nDealer's Hand:\n First card hidden\n", dealer.cards[1])
     
 def show_all(player,dealer):
-    print (f'Player hand value {player.value}')
-    print (f'Dealer hand value {dealer.value}')
+    print ("\nPlayer's Hand", *player.cards, sep = "\n")
+    print ("Value: ", player.value)
+    print ("\nDealer's Hand: ", *dealer.cards, sep = "\n")
+    print ("Value: " , dealer.value)
 
 def player_busts(player):
     if player.hand.value > 21:
@@ -126,7 +147,25 @@ def push():
     print("its a tie")
 
 
-def playing_game():
+
+while True:
+    deck = Deck()
+    wallet = Wallet()
+    wallet.add_to_wallet(int(input("How much do you want to add to your wallet for betting? ")))
+    player = Hand()
+    dealer = Hand()
+    player.add_card(deck.deal())
+    player.add_card(deck.deal())
+    dealer.add_card(deck.deal())
+    dealer.add_card(deck.deal())
+    make_bet(wallet)
+    show_some(player, dealer)
+    while playing:
+        hit_or_stand(deck,player)
+        break
+    break
 
 
-    while 
+        
+
+
