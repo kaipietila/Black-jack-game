@@ -6,6 +6,7 @@ values = {'Two':2, 'Three':3, 'Four':4, 'Five':5, 'Six':6, 'Seven':7, 'Eight':8,
          'Queen':10, 'King':10, 'Ace':11}
 
 playing = True
+turns_playing = 0
 
 class Card:
     '''
@@ -65,7 +66,7 @@ class Wallet:
     '''
     A wallet to store and make the bets
     '''
-    def __init__(self, amount=0):
+    def __init__(self, amount=100):
         self.amount = amount
         self.bet_amount = 0
 
@@ -80,19 +81,22 @@ class Wallet:
             self.amount -= bet_amount
     
     def show_wallet(self):
-        return self.amount
-
+        print(f"Your wallet contains {self.amount} ")
+'''
+if I want to add class player for each player, but with two you dont really need it
 class Player:
 
     def __init__(self, wallet, hand):
         self.wallet = wallet
         self.hand = hand
+'''
     
 
 def make_bet(wallet):
     while True:
         try:
-            bet_amount= int(input("How much would you like to bet?"))
+            bet_amount= int(input(f"How much would you like to bet? You wallet contains {wallet.amount}\n"))
+            return bet_amount
         except:
             ValueError("not a valid amount!")
         else:
@@ -108,21 +112,28 @@ def hit_card(deck, hand):
        
 def hit_or_stand(deck, hand):
     global playing
-    player_input = input("Do you want to hit or to stand? h/s ")
     while True: 
-        if player_input = "h":
+        player_input = input("Do you want to hit or to stand? h/s ")
+        if player_input is "h":
             hit_card(deck, hand)
-            break
-        elif input = "s":
-            global playing = False
+            show_some(player_hand, dealer_hand)
+            if player_busts(player_hand):
+                print("player has busted!")
+                playing = False
+            else:
+                continue
+        elif player_input is "s":
+            playing = False
             print("player stands, dealers turn! ")
-            break
         else:
             print("do not understand!")
+            continue
+        break
 
 
 def show_some(player,dealer):
     print("\nPlayer's Hand: ", *player.cards, sep = "\n")
+    print(f"Player hand has a value of {player_hand.value}")
     print ("\nDealer's Hand:\n First card hidden\n", dealer.cards[1])
     
 def show_all(player,dealer):
@@ -132,13 +143,24 @@ def show_all(player,dealer):
     print ("Value: " , dealer.value)
 
 def player_busts(player):
-    if player.hand.value > 21:
+    if player_hand.value > 21:
         return True
     else:
         return False
 
-def player_wins(player1, player2):
-    if player2.hand.value < player1.hand.value <= 21:
+def dealer_busts(dealer):
+    if dealer_hand.value > 21:
+        return True
+    else:
+        return False
+
+def player_wins(player, dealer):
+    if dealer_hand.value < player_hand.value <= 21:
+        return True
+    else:
+        return False
+def dealer_wins(player, dealer):
+    if player_hand.value < dealer_hand.value <= 21:
         return True
     else:
         return False
@@ -148,22 +170,57 @@ def push():
 
 
 
+
 while True:
     deck = Deck()
-    wallet = Wallet()
-    wallet.add_to_wallet(int(input("How much do you want to add to your wallet for betting? ")))
-    player = Hand()
-    dealer = Hand()
-    player.add_card(deck.deal())
-    player.add_card(deck.deal())
-    dealer.add_card(deck.deal())
-    dealer.add_card(deck.deal())
-    make_bet(wallet)
-    show_some(player, dealer)
+    if turns_playing == 0:
+        wallet = Wallet()
+    bet_amount = 0
+    player_hand = Hand()
+    dealer_hand = Hand()
+    player_hand.add_card(deck.deal())
+    player_hand.add_card(deck.deal())
+    dealer_hand.add_card(deck.deal())
+    dealer_hand.add_card(deck.deal())
+    bet_amount = make_bet(wallet)
+    show_some(player_hand, dealer_hand)
+    win = False
     while playing:
-        hit_or_stand(deck,player)
+        hit_or_stand(deck,player_hand)
+
+    if player_hand.value <= 21:
+        while dealer_hand.value < 17:
+            hit_card(deck, dealer_hand)
+        else:
+            show_all(player_hand,dealer_hand)
+            if dealer_busts(dealer_hand):
+                win = True
+                print(" Dealer busts and player wins!")
+            elif player_wins(player_hand, dealer_hand):
+                win = True
+                print("player wins!")
+            elif dealer_wins(player_hand, dealer_hand):
+                print("dealer wins!")
+            else:
+                push()
+    
+    if win:
+        wallet.check_bet(bet_amount, True)
+        wallet.show_wallet()
+    else:
+        wallet.check_bet(bet_amount, False)
+        wallet.show_wallet()
+    
+    new_game = input("Do you want to play again? y/n ")
+
+    if new_game is "y":
+        playing = True
+        turns_playing += 1
+        continue
+    else:
+        print("Thanks for playing!")
         break
-    break
+
 
 
         
