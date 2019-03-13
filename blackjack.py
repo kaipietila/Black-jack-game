@@ -6,7 +6,6 @@ values = {'Two':2, 'Three':3, 'Four':4, 'Five':5, 'Six':6, 'Seven':7, 'Eight':8,
          'Queen':10, 'King':10, 'Ace':11}
 
 playing = True
-turns_playing = 0
 
 class Card:
     '''
@@ -18,6 +17,9 @@ class Card:
         self.value = values[rank]
     
     def __str__(self):
+        return (f'{self.rank} of {self.suit}')
+    
+    def __repr__(self):
         return (f'{self.rank} of {self.suit}')
 
 class Deck:
@@ -110,12 +112,12 @@ def hit_card(deck, hand):
     card = deck.deal()
     hand.add_card(card)
        
-def hit_or_stand(deck, hand):
+def hit_or_stand(deck, player_hand, dealer_hand):
     global playing
     while True: 
         player_input = input("Do you want to hit or to stand? h/s ")
         if player_input is "h":
-            hit_card(deck, hand)
+            hit_card(deck, player_hand)
             show_some(player_hand, dealer_hand)
             if player_busts(player_hand):
                 print("player has busted!")
@@ -123,8 +125,8 @@ def hit_or_stand(deck, hand):
             else:
                 continue
         elif player_input is "s":
-            playing = False
             print("player stands, dealers turn! ")
+            playing = False
         else:
             print("do not understand!")
             continue
@@ -133,7 +135,7 @@ def hit_or_stand(deck, hand):
 
 def show_some(player,dealer):
     print("\nPlayer's Hand: ", *player.cards, sep = "\n")
-    print(f"Player hand has a value of {player_hand.value}")
+    print(f"Player hand has a value of {player.value}")
     print ("\nDealer's Hand:\n First card hidden\n", dealer.cards[1])
     
 def show_all(player,dealer):
@@ -142,24 +144,24 @@ def show_all(player,dealer):
     print ("\nDealer's Hand: ", *dealer.cards, sep = "\n")
     print ("Value: " , dealer.value)
 
-def player_busts(player):
+def player_busts(player_hand):
     if player_hand.value > 21:
         return True
     else:
         return False
 
-def dealer_busts(dealer):
+def dealer_busts(dealer_hand):
     if dealer_hand.value > 21:
         return True
     else:
         return False
 
-def player_wins(player, dealer):
+def player_wins(player_hand, dealer_hand):
     if dealer_hand.value < player_hand.value <= 21:
         return True
     else:
         return False
-def dealer_wins(player, dealer):
+def dealer_wins(player_hand, dealer_hand):
     if player_hand.value < dealer_hand.value <= 21:
         return True
     else:
@@ -169,60 +171,62 @@ def push():
     print("its a tie")
 
 
+def main():
+    global playing
+    turns_playing = 0
+    while True:
+        deck = Deck()
+        if turns_playing == 0:
+            wallet = Wallet()
+        bet_amount = 0
+        player_hand = Hand()
+        dealer_hand = Hand()
+        player_hand.add_card(deck.deal())
+        player_hand.add_card(deck.deal())
+        dealer_hand.add_card(deck.deal())
+        dealer_hand.add_card(deck.deal())
+        bet_amount = make_bet(wallet)
+        show_some(player_hand, dealer_hand)
+        win = False
+        while playing:
+            hit_or_stand(deck, player_hand, dealer_hand)
 
-
-while True:
-    deck = Deck()
-    if turns_playing == 0:
-        wallet = Wallet()
-    bet_amount = 0
-    player_hand = Hand()
-    dealer_hand = Hand()
-    player_hand.add_card(deck.deal())
-    player_hand.add_card(deck.deal())
-    dealer_hand.add_card(deck.deal())
-    dealer_hand.add_card(deck.deal())
-    bet_amount = make_bet(wallet)
-    show_some(player_hand, dealer_hand)
-    win = False
-    while playing:
-        hit_or_stand(deck,player_hand)
-
-    if player_hand.value <= 21:
-        while dealer_hand.value < 17:
-            hit_card(deck, dealer_hand)
-        else:
-            show_all(player_hand,dealer_hand)
-            if dealer_busts(dealer_hand):
-                win = True
-                print(" Dealer busts and player wins!")
-            elif player_wins(player_hand, dealer_hand):
-                win = True
-                print("player wins!")
-            elif dealer_wins(player_hand, dealer_hand):
-                print("dealer wins!")
+        if player_hand.value <= 21:
+            while dealer_hand.value < 17:
+                hit_card(deck, dealer_hand)
             else:
-                push()
-    
-    if win:
-        wallet.check_bet(bet_amount, True)
-        wallet.show_wallet()
-    else:
-        wallet.check_bet(bet_amount, False)
-        wallet.show_wallet()
-    
-    new_game = input("Do you want to play again? y/n ")
-
-    if new_game is "y":
-        playing = True
-        turns_playing += 1
-        continue
-    else:
-        print("Thanks for playing!")
-        break
-
-
-
+                show_all(player_hand,dealer_hand)
+                if dealer_busts(dealer_hand):
+                    win = True
+                    print(" Dealer busts and player wins!")
+                elif player_wins(player_hand, dealer_hand):
+                    win = True
+                    print("player wins!")
+                elif dealer_wins(player_hand, dealer_hand):
+                    print("dealer wins!")
+                else:
+                    push()
         
+        if win:
+            wallet.check_bet(bet_amount, True)
+            wallet.show_wallet()
+        else:
+            wallet.check_bet(bet_amount, False)
+            wallet.show_wallet()
+        
+        new_game = input("Do you want to play again? y/n ")
+
+        if new_game is "y":
+            playing = True
+            turns_playing += 1
+            continue
+        else:
+            print("Thanks for playing!")
+            break
+
+
+if __name__ == "__main__":
+    main()
+            
 
 

@@ -1,0 +1,5 @@
+[
+  "test_black_jack.py::TestBlackJack::()::test_card",
+  "test_black_jack.py::TestBlackJack::()::test_deck",
+  "test_black_jack.py::TestBlackJack::()::test_deal"
+]
